@@ -1,0 +1,27 @@
+{
+  "name": "phonebook",
+  "version": "1.0.0",
+  "description": "Backend for the phonebook app",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "nodemon index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/denvicar/FSOPart3.git"
+  },
+  "author": "Ciro Faenza",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/denvicar/FSOPart3/issues"
+  },
+  "homepage": "https://github.com/denvicar/FSOPart3#readme",
+  "dependencies": {
+    "express": "^4.17.1"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.14"
+  }
+}
