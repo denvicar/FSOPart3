@@ -10,6 +10,7 @@ const generateId = () => {
 }
 
 app.use(express.json())
+app.use(express.static('build'))
 app.use(cors())
 
 morgan.token('body', function (req,res) {return JSON.stringify(req.body)})
