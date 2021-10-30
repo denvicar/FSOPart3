@@ -21,7 +21,7 @@ app.use(morgan(':method :url :status :res[content-length] - :response-time ms - 
 }))
 
 
-app.get("/api/persons",(request,response,next) => {
+app.get('/api/persons',(request,response,next) => {
     Person.find({}).then(result=> {
         response.json(result)
     }).catch(error=>next(error))
@@ -62,7 +62,7 @@ app.put('/api/persons/:id', (request, response, next) => {
 })
 
 app.delete('/api/persons/:id', (request, response,next) => {
-    Person.findByIdAndRemove(request.params.id).then(result=>{
+    Person.findByIdAndRemove(request.params.id).then(()=>{
         response.status(204).end()
     }).catch(error=>next(error))
 })
@@ -80,7 +80,7 @@ const errorHandler = (error,request,response,next) => {
 
     if(error.name==='CastError') {
         response.status(400)
-        response.send({error: "malformed id"})
+        response.send({error: 'malformed id'})
     } else if (error.name==='ValidationError') {
         response.status(400).json({error: error.message})
     }
