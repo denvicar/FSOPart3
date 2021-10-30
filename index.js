@@ -7,10 +7,6 @@ const Person = require('./models/person')
 
 const app = express()
 
-const generateId = () => {
-    return Math.floor(Math.random()*100)+1
-}
-
 app.use(express.json())
 app.use(express.static('build'))
 app.use(cors())
@@ -24,10 +20,11 @@ app.use(morgan(':method :url :status :res[content-length] - :response-time ms - 
     skip: function (req,res) {return req.method!=='POST'}
 }))
 
-app.get("/api/persons",(request,response) => {
+
+app.get("/api/persons",(request,response,next) => {
     Person.find({}).then(result=> {
         response.json(result)
-    })
+    }).catch(error=>next(error))
 })
 
 app.get('/info', (request,response) => {
@@ -38,7 +35,7 @@ app.get('/info', (request,response) => {
     response.send(res)
 })
 
-app.get('/api/persons/:id', (request, response) => {
+app.get('/api/persons/:id', (request, response,next) => {
     Person.findById(request.params.id).then(person=>{
         if(person) {
             response.json(person)
@@ -46,39 +43,35 @@ app.get('/api/persons/:id', (request, response) => {
             response.status(404)
             response.end()
         }
-    })
+    }).catch(error=>next(error))
 })
 
-app.delete('/api/persons/:id', (request, response) => {
+app.delete('/api/persons/:id', (request, response,next) => {
     Person.findByIdAndRemove(request.params.id).then(result=>{
         response.status(204).end()
-    })
+    }).catch(error=>next(error))
 })
 
-app.post('/api/persons', (request,response) => {
+app.post('/api/persons', (request,response,next) => {
     const person = new Person(request.body)
-
-    // if(!person.name) {
-    //     return response.status(400).json({
-    //         error: "name missing"
-    //     })
-    // } else if (!person.number) {
-    //     return response.status(400).json({
-    //         error: "number missing"
-    //     })
-    // } else if (persons.find(p=>p.name===person.name)) {
-    //     return response.status(400).json({
-    //         error: `person with name ${person.name} is already present`
-    //     })
-    // }
-
-    // const id = generateId()
-    // person.id=id
     
     person.save().then(result=>{
         response.json(result)
-    })
+    }).catch(error=>next(error))
 })
+
+const errorHandler = (error,request,response,next) => {
+    console.log(error.message)
+
+    if(error.name==='CastError') {
+        response.status(400)
+        response.send({error: "malformed id"})
+    }
+
+    next(error)
+}
+
+app.use(errorHandler)
 
 const PORT = process.env.PORT
 app.listen(PORT, () => {
